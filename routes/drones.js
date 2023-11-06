@@ -27,12 +27,22 @@ router.post("/drones/create", async (req, res, next) => {
   }
 });
 
-router.get("/drones/:id/edit", (req, res, next) => {
+router.get("/drones/:id/edit", async (req, res, next) => {
   // Iteration #4: Update the drone
-  // ... your code here
+  const oneDrone = await Drones.findById(req.params.id);
+  res.render("drones/update-form", oneDrone);
 });
 
-router.post("/drones/:id/edit", (req, res, next) => {
+router.post("/drones/:id/edit", async (req, res, next) => {
+  try {
+  
+    await Drones.findByIdAndUpdate(req.params.id, req.body)
+    res.redirect("/drones")
+    console.log(req.body);
+  } catch (error) {
+    next(err);
+  }
+
   // Iteration #4: Update the drone
   // ... your code here
 });
