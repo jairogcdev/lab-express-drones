@@ -7,7 +7,6 @@ const Drones = require("../models/Drone.model");
 router.get("/drones", async (req, res, next) => {
   // Iteration #2: List the drones
   const droneList = await Drones.find();
-  console.log(droneList);
   res.render("drones/list", { droneList });
 });
 
@@ -34,22 +33,23 @@ router.get("/drones/:id/edit", async (req, res, next) => {
 });
 
 router.post("/drones/:id/edit", async (req, res, next) => {
-  try {
-  
-    await Drones.findByIdAndUpdate(req.params.id, req.body)
-    res.redirect("/drones")
-    console.log(req.body);
-  } catch (error) {
-    next(err);
-  }
-
   // Iteration #4: Update the drone
-  // ... your code here
+  try {
+    await Drones.findByIdAndUpdate(req.params.id, req.body);
+    res.redirect("/drones");
+  } catch (error) {
+    next(error);
+  }
 });
 
-router.post("/drones/:id/delete", (req, res, next) => {
+router.post("/drones/:id/delete", async (req, res, next) => {
   // Iteration #5: Delete the drone
-  // ... your code here
+  try {
+    await Drones.findByIdAndDelete(req.params.id);
+    res.redirect("/drones");
+  } catch (error) {
+    next(error);
+  }
 });
 
 module.exports = router;
