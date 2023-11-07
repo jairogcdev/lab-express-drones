@@ -6,8 +6,12 @@ const Drones = require("../models/Drone.model");
 
 router.get("/drones", async (req, res, next) => {
   // Iteration #2: List the drones
-  const droneList = await Drones.find();
-  res.render("drones/list", { droneList });
+  try {
+    const droneList = await Drones.find();
+    res.render("drones/list", { droneList });
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.get("/drones/create", (req, res, next) => {
@@ -18,7 +22,8 @@ router.get("/drones/create", (req, res, next) => {
 router.post("/drones/create", async (req, res, next) => {
   // Iteration #3: Add a new drone
   try {
-    await Drones.create(req.body);
+    const { name, propellers, maxSpeed } = req.body;
+    await Drones.create({ name, propellers, maxSpeed });
     res.redirect("/drones");
   } catch (error) {
     next(error);
@@ -28,14 +33,23 @@ router.post("/drones/create", async (req, res, next) => {
 
 router.get("/drones/:id/edit", async (req, res, next) => {
   // Iteration #4: Update the drone
-  const oneDrone = await Drones.findById(req.params.id);
-  res.render("drones/update-form", oneDrone);
+  try {
+    const oneDrone = await Drones.findById(req.params.id);
+    res.render("drones/update-form", oneDrone);
+  } catch (error) {
+    next(error);
+  }
 });
 
 router.post("/drones/:id/edit", async (req, res, next) => {
   // Iteration #4: Update the drone
   try {
-    await Drones.findByIdAndUpdate(req.params.id, req.body);
+    const { name, propellers, maxSpeed } = req.body;
+    await Drones.findByIdAndUpdate(req.params.id, {
+      name,
+      propellers,
+      maxSpeed,
+    });
     res.redirect("/drones");
   } catch (error) {
     next(error);
